@@ -9,6 +9,7 @@ import {
   increaseDayCount,
   isAdmin,
   removeAdmin,
+  sendMessage,
   sendMessageToGroup,
   setAdmin,
   setDayCount,
@@ -126,7 +127,8 @@ app.post(URI, async (req: Request, res: Response) => {
 
       if (isIdValid) {
         await removeAdmin(toBeRemovedId);
-        await sendMessageToGroup(
+        await sendMessage(
+          -643478967,
           `INFO: ID ${toBeRemovedId} REMOVED FROM ADMIN LIST.`
         );
       }
