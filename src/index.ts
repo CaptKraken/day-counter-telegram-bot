@@ -88,6 +88,7 @@ app.post(URI, async (req: Request, res: Response) => {
       if (isNaN(count)) res.send();
       await setDayCount(Number(count));
     }
+    await increaseDayCount();
   } catch (err) {
   } finally {
     res.send();

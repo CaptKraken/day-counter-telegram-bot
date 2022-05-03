@@ -63,6 +63,7 @@ export const increaseDayCount = async () => {
     if (collection.ok) {
       //@ts-ignore
       cache = collection.value;
+      console.log(collection.value);
       return collection.value;
     } else {
       return null;
