@@ -60,7 +60,7 @@ cron.schedule(
       const doc = await increaseDayCount();
       // send message to the group
       if (doc) {
-        await sendMessageToGroup(`ថ្ងៃ ${doc["day_count"]}`);
+        await sendMessageToGroup(`ថ្ងៃ ${doc.day_count}`);
       }
     } catch (err) {
       console.error(`Cron Job Error\nerror: ${err}`);
