@@ -41,6 +41,11 @@ const init = async () => {
   }
 };
 
+// keep the heroku app alive
+setInterval(function () {
+  axios.get(`${SERVER_URL}`);
+}, 600000); // every 10 minutes
+
 const everydayAtFiveAM: string = "00 05 * * *";
 cron.schedule(
   everydayAtFiveAM,
@@ -83,7 +88,7 @@ app.post(URI, async (req: Request, res: Response) => {
   const chatId: number = message.chat.id;
   const senderId: number = message.from.id;
   const text: string = `${message.text}`.trim();
-
+  console.log(text, messageId, chatId, senderId);
   if (!text || !messageId || !chatId || !senderId || !isAdmin(senderId)) {
     res.send();
   }
