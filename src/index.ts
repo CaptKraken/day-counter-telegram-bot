@@ -7,7 +7,9 @@ import {
   dbClient,
   fetchAndCache,
   increaseDayCount,
+  isAdmin,
   sendMessageToGroup,
+  setAdmin,
   setDayCount,
   setGroup,
 } from "./services";
@@ -70,9 +72,15 @@ app.get("/", (req: Request, res: Response) => {
   res.json({ alive: true });
 });
 
+const COMMANDS = {
+  setCount: "setCount",
+  setGroup: "setGroup",
+  setAdmin: "setAdmin",
+};
+
 app.post(URI, async (req: Request, res: Response) => {
   console.log(req.body);
-  const message = req.body.message || req.body.edited_message;
+  const message = req.body.message;
   if (!message) return res.send();
   const messageId: number = message.message_id;
   const chatId: number = message.chat.id;
@@ -80,18 +88,31 @@ app.post(URI, async (req: Request, res: Response) => {
   const text: string = message.text.trim();
   console.log(`TEXT`, text);
 
-  if (!text) res.send();
+  if (!text || !messageId || !chatId || !senderId || !isAdmin(senderId)) {
+    res.send();
+  }
   try {
-    if (text.includes("/setCount ")) {
-      const count = Number(text.replace("/setCount ", "").trim());
-      if (isNaN(count)) res.send();
-      await setDayCount(Number(count));
+    if (text.includes(`${COMMANDS.setCount} `)) {
+      const count = Number(text.replace(`${COMMANDS.setCount} `, "").trim());
+      const isIdValid = !isNaN(count);
+      if (isIdValid) {
+        await setDayCount(count);
+      }
     }
-    if (text.includes("/setGroup")) {
+    if (text.includes(COMMANDS.setGroup)) {
       const isGroup = message.chat.type === "group";
 
-      if (!isGroup || !chatId) res.send();
-      await setGroup(chatId);
+      if (isGroup) {
+        await setGroup(chatId);
+      }
+    }
+
+    if (text.includes(COMMANDS.setAdmin)) {
+      const toBeAdminId = message.forward_from.id;
+      const isIdValid = !isNaN(toBeAdminId);
+      if (isIdValid) {
+        await setAdmin(toBeAdminId);
+      }
     }
   } catch (err) {
   } finally {

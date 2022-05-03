@@ -17,6 +17,8 @@ export type Cache = DBSchema | undefined;
 
 export let cache: Cache;
 
+export const isAdmin = (senderId: number) => cache?.admins.includes(senderId);
+
 export const fetchAndCache = async () => {
   try {
     await dbClient.connect();
@@ -101,6 +103,7 @@ export const setDayCount = async (dayCount: number) => {
     await dbClient.close();
   }
 };
+
 export const setGroup = async (groupId: number) => {
   try {
     await dbClient.connect();
@@ -136,6 +139,26 @@ export const sendMessage = async (chat_id: number, message: string) => {
     throw new Error(
       `function: "sendMessage"\nchat_id: ${chat_id}\nmessage: ${message}\n${err}`
     );
+  }
+};
+
+export const setAdmin = async (senderId: number) => {
+  try {
+    await dbClient.connect();
+    await dbClient
+      .db("day-count-db")
+      .collection("data")
+      .updateOne(
+        { _id: new ObjectId(DOCUMENT_ID) },
+        {
+          $push: { admins: senderId },
+        }
+      );
+    await fetchAndCache();
+  } catch (err) {
+    throw new Error(`function: "setGroup"\nError:\n${err}`);
+  } finally {
+    await dbClient.close();
   }
 };
 
