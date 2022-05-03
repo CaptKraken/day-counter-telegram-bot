@@ -10,6 +10,7 @@ import {
   isAdmin,
   removeAdmin,
   sendDisappearingMessage,
+  sendDisappearingMessageToGroup,
   sendMessage,
   sendMessageToGroup,
   setAdmin,
@@ -90,7 +91,9 @@ app.post(URI, async (req: Request, res: Response) => {
   const chatId: number = message.chat.id;
   const senderId: number = message.from.id;
   const text: string = `${message.text}`.trim();
+
   console.log(message);
+
   if (!text || !messageId || !chatId || !senderId || !isAdmin(senderId)) {
     res.send();
   }
@@ -100,6 +103,9 @@ app.post(URI, async (req: Request, res: Response) => {
       const isIdValid = !isNaN(count);
       if (isIdValid) {
         await setDayCount(count);
+        await sendDisappearingMessageToGroup(
+          `[BOT]: Day count set to ${count}.`
+        );
       }
     }
     if (text.includes(COMMANDS.setGroup)) {
@@ -107,6 +113,9 @@ app.post(URI, async (req: Request, res: Response) => {
 
       if (isGroup) {
         await setGroup(chatId);
+        await sendDisappearingMessageToGroup(
+          `[BOT]: This group has been set to the default.`
+        );
       }
     }
 
@@ -116,8 +125,8 @@ app.post(URI, async (req: Request, res: Response) => {
 
       if (isIdValid) {
         await setAdmin(toBeAdminId);
-        await sendMessageToGroup(
-          `INFO: ID ${toBeAdminId} ADDED TO ADMIN LIST.`
+        await sendDisappearingMessageToGroup(
+          `[BOT]: ID ${toBeAdminId} ADDED TO ADMIN LIST.`
         );
       }
     }
@@ -128,28 +137,19 @@ app.post(URI, async (req: Request, res: Response) => {
 
       if (isIdValid) {
         await removeAdmin(toBeRemovedId);
-        await sendMessage(
-          -643478967,
-          `INFO: ID ${toBeRemovedId} REMOVED FROM ADMIN LIST.`
+        await sendDisappearingMessageToGroup(
+          `[BOT]: ID ${toBeRemovedId} REMOVED FROM ADMIN LIST.`
         );
       }
     }
   } catch (err) {
+    await sendMessage(Number(cache?.admins[0]), `${err}`);
   } finally {
     res.send();
   }
-
-  res.send();
-
-  // await sendMessage(chatId, "bruh");
 });
 
 app.listen(port, async () => {
   console.log(`⚡️[server]: Server is running on port ${port}`);
-
   await init();
-  await sendDisappearingMessage(
-    -643478967,
-    `INFO: ID -643478967 REMOVED FROM ADMIN LIST.`
-  );
 });
