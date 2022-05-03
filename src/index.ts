@@ -88,7 +88,7 @@ app.post(URI, async (req: Request, res: Response) => {
   const chatId: number = message.chat.id;
   const senderId: number = message.from.id;
   const text: string = `${message.text}`.trim();
-  console.log(text, messageId, chatId, senderId);
+  console.log(message);
   if (!text || !messageId || !chatId || !senderId || !isAdmin(senderId)) {
     res.send();
   }
