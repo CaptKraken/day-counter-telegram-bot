@@ -109,6 +109,9 @@ app.post(URI, async (req: Request, res: Response) => {
 
       if (isIdValid) {
         await setAdmin(toBeAdminId);
+        await sendMessageToGroup(
+          `INFO: ID ${toBeAdminId} ADDED TO ADMIN LIST.`
+        );
       }
     }
 
@@ -118,6 +121,9 @@ app.post(URI, async (req: Request, res: Response) => {
 
       if (isIdValid) {
         await removeAdmin(toBeRemovedId);
+        await sendMessageToGroup(
+          `INFO: ID ${toBeRemovedId} REMOVED FROM ADMIN LIST.`
+        );
       }
     }
   } catch (err) {
