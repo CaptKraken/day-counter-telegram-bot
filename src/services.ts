@@ -2,8 +2,8 @@ import axios from "axios";
 import { MongoClient, ObjectId, WithId } from "mongodb";
 import dotenv from "dotenv";
 dotenv.config();
-const { CONNECTION_STRING, DOCUMENT_ID, TELEGRAM_API } = process.env;
-
+const { TOKEN, CONNECTION_STRING, DOCUMENT_ID } = process.env;
+const TELEGRAM_API = `https://api.telegram.org/bot${TOKEN}`;
 export const dbClient = new MongoClient(`${CONNECTION_STRING}`);
 
 type DBSchema = {
@@ -131,10 +131,11 @@ export const setGroup = async (groupId: number) => {
 export const sendMessage = async (chat_id: number, message: string) => {
   if (!chat_id || !message) return;
   try {
-    await axios.post(`${TELEGRAM_API}/sendMessage`, {
+    const res = await axios.post(`${TELEGRAM_API}/sendMessage`, {
       chat_id,
       text: message,
     });
+    console.log(res.data);
   } catch (err) {
     throw new Error(
       `function: "sendMessage"\nchat_id: ${chat_id}\nmessage: ${message}\n${err}`
