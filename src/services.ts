@@ -84,9 +84,15 @@ export const setDayCount = async (dayCount: number) => {
         { _id: new ObjectId(DOCUMENT_ID) },
         {
           $set: { day_count: dayCount },
+        },
+        {
+          upsert: true,
         }
       );
+    // @ts-ignore
+    cache = { ...collection.value, day_count: dayCount };
     console.log(collection.value);
+    console.log("updated", { ...collection.value, day_count: dayCount });
   } catch (err) {
     throw new Error(`function: "setDayCount"\nError:\n${err}`);
   } finally {
