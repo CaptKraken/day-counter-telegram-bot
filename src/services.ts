@@ -203,14 +203,28 @@ export const deleteMessage = async (chat_id: number, message_id: number) => {
 
 export const sendDisappearingMessage = async (
   chat_id: number,
-  message: string
+  message: string,
+  seconds: number = 5
 ) => {
-  const result = await sendMessage(chat_id, message);
+  const result = await sendMessage(
+    chat_id,
+    `${message}\nThis message will be deleted in ${seconds} seconds.`
+  );
   const sentMessageId = result.message_id;
   if (!sentMessageId) return;
   setTimeout(async () => {
     await deleteMessage(chat_id, sentMessageId);
-  }, 5000);
+  }, seconds * 1000);
+};
+
+export const sendDisappearingMessageToGroup = async (
+  message: string,
+  seconds: number = 5
+) => {
+  if (!cache?.chat_id) await fetchAndCache();
+  if (cache?.chat_id) {
+    await sendDisappearingMessage(cache.chat_id, message, seconds);
+  }
 };
 
 export const sendMessageToGroup = async (message: string) => {
