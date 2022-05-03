@@ -32,24 +32,27 @@ app.use(bodyParser.json());
 
 const init = async () => {
   try {
+    // set up webhook
     const res = await axios.get(
       `${TELEGRAM_API}/setWebhook?url=${WEBHOOK_URL}`
     );
     console.info(res.data);
 
+    // get data from the database
     await fetchAndCache();
   } catch (err) {
     console.log(err);
-    //   await sendMessageToAdmin(`INIT FAILED\n${err}`);
   }
 };
 
-// keep the heroku app alive
+// keeps the heroku app alive
 setInterval(function () {
   axios.get(`${SERVER_URL}`);
 }, 600000); // every 10 minutes
 
 const everydayAtFiveAM: string = "00 05 * * *";
+
+// sends the message to the default group everyday at 0500
 cron.schedule(
   everydayAtFiveAM,
   async function () {
@@ -77,6 +80,7 @@ app.get("/", (req: Request, res: Response) => {
   res.json({ alive: true });
 });
 
+// available commands
 const COMMANDS = {
   setCount: "setCount",
   setGroup: "setGroup",
@@ -92,8 +96,9 @@ app.post(URI, async (req: Request, res: Response) => {
   const senderId: number = message.from.id;
   const text: string = `${message.text}`.trim();
 
-  console.log(message);
+  console.log(message); // just to look at in heroku app log
 
+  // admin only
   if (!text || !messageId || !chatId || !senderId || !isAdmin(senderId)) {
     res.send();
   }
@@ -108,6 +113,7 @@ app.post(URI, async (req: Request, res: Response) => {
         );
       }
     }
+
     if (text.includes(COMMANDS.setGroup)) {
       const isGroup = message.chat.type === "group";
 
@@ -126,7 +132,7 @@ app.post(URI, async (req: Request, res: Response) => {
       if (isIdValid) {
         await setAdmin(toBeAdminId);
         await sendDisappearingMessageToGroup(
-          `[BOT]: ID ${toBeAdminId} ADDED TO ADMIN LIST.`
+          `[BOT]: ID ${toBeAdminId} added to the admin list.`
         );
       }
     }
@@ -138,7 +144,7 @@ app.post(URI, async (req: Request, res: Response) => {
       if (isIdValid) {
         await removeAdmin(toBeRemovedId);
         await sendDisappearingMessageToGroup(
-          `[BOT]: ID ${toBeRemovedId} REMOVED FROM ADMIN LIST.`
+          `[BOT]: ID ${toBeRemovedId} remove from the admin list.`
         );
       }
     }
