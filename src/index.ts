@@ -83,8 +83,8 @@ app.post(URI, async (req: Request, res: Response) => {
 
   if (!text) res.send();
   try {
-    if (text.includes("/setCount")) {
-      const count = Number(text.replace("/setCount", "").trim());
+    if (text.includes("/setCount ")) {
+      const count = Number(text.replace("/setCount ", "").trim());
       console.log("COUNT", count);
       if (!isNaN(count)) {
         await setDayCount(Number(count));
