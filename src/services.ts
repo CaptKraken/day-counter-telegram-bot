@@ -74,6 +74,24 @@ export const increaseDayCount = async () => {
   }
 };
 
+export const setDayCount = async (dayCount: number) => {
+  try {
+    await dbClient.connect();
+    const collection = await dbClient
+      .db("day-count-db")
+      .collection("data")
+      .findOneAndUpdate(
+        { _id: new ObjectId(DOCUMENT_ID) },
+        { day_count: dayCount }
+      );
+    console.log(collection.value);
+  } catch (err) {
+    throw new Error(`function: "setDayCount"\nError:\n${err}`);
+  } finally {
+    await dbClient.close();
+  }
+};
+
 export const sendMessage = async (chat_id: number, message: string) => {
   if (!chat_id || !message) return;
   try {
