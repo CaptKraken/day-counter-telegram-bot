@@ -61,10 +61,15 @@ export const increaseDayCount = async () => {
         { $inc: { day_count: 1 } }
       );
     if (collection.ok) {
+      const updated = {
+        ...collection.value,
+        day_count: (collection?.value?.day_count || 0) + 1,
+      };
       //@ts-ignore
-      cache = collection.value;
+      cache = updated;
       console.log(collection.value);
-      return collection.value;
+      console.log(updated);
+      return updated;
     } else {
       return null;
     }
