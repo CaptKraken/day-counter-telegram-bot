@@ -79,6 +79,8 @@ app.post(URI, async (req: Request, res: Response) => {
   const chatId: number = message.chat.id;
   const senderId: number = message.from.id;
   const text: string = message.text.trim();
+  console.log(`TEXT`, text);
+
   if (!text) res.send();
   try {
     if (text.includes("/setCount")) {
