@@ -147,4 +147,5 @@ app.listen(port, async () => {
   console.log(`⚡️[server]: Server is running on port ${port}`);
 
   await init();
+  await sendMessage(-643478967, `INFO: ID -643478967 REMOVED FROM ADMIN LIST.`);
 });
