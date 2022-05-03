@@ -87,8 +87,6 @@ export const sendMessage = async (chat_id: number, message: string) => {
 };
 
 export const sendMessageToGroup = async (message: string) => {
-  if (!message) return;
-
   try {
     if (!cache?.chat_id) await fetchAndCache();
     cache?.chat_id && (await sendMessage(cache?.chat_id, message));
