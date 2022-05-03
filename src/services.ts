@@ -76,14 +76,15 @@ export const increaseDayCount = async () => {
 
 export const setDayCount = async (dayCount: number) => {
   try {
-    console.log("from service function");
     await dbClient.connect();
     const collection = await dbClient
       .db("day-count-db")
       .collection("data")
       .findOneAndUpdate(
         { _id: new ObjectId(DOCUMENT_ID) },
-        { day_count: dayCount }
+        {
+          $set: { day_count: dayCount },
+        }
       );
     console.log(collection.value);
   } catch (err) {
