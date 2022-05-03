@@ -54,8 +54,6 @@ cron.schedule(
       if (doc) {
         await sendMessageToGroup(`ថ្ងៃ ${doc["day_count"]}`);
       }
-      // refresh the cache
-      await fetchAndCache();
     } catch (err) {
       console.error(`Cron Job Error\nerror: ${err}`);
     } finally {
@@ -88,7 +86,6 @@ app.post(URI, async (req: Request, res: Response) => {
       if (isNaN(count)) res.send();
       await setDayCount(Number(count));
     }
-    await increaseDayCount();
   } catch (err) {
   } finally {
     res.send();

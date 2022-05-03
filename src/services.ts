@@ -67,8 +67,6 @@ export const increaseDayCount = async () => {
       };
       //@ts-ignore
       cache = updated;
-      console.log(collection.value);
-      console.log(updated);
       return updated;
     } else {
       return null;
@@ -97,8 +95,6 @@ export const setDayCount = async (dayCount: number) => {
       );
     // @ts-ignore
     cache = { ...collection.value, day_count: dayCount };
-    console.log(collection.value);
-    console.log("updated", { ...collection.value, day_count: dayCount });
   } catch (err) {
     throw new Error(`function: "setDayCount"\nError:\n${err}`);
   } finally {
