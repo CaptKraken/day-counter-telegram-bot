@@ -162,6 +162,26 @@ export const setAdmin = async (senderId: number) => {
   }
 };
 
+export const removeAdmin = async (senderId: number) => {
+  try {
+    await dbClient.connect();
+    await dbClient
+      .db("day-count-db")
+      .collection("data")
+      .updateOne(
+        { _id: new ObjectId(DOCUMENT_ID) },
+        {
+          $pull: { admins: senderId },
+        }
+      );
+    await fetchAndCache();
+  } catch (err) {
+    throw new Error(`function: "setGroup"\nError:\n${err}`);
+  } finally {
+    await dbClient.close();
+  }
+};
+
 export const sendMessageToGroup = async (message: string) => {
   try {
     if (!cache?.chat_id) await fetchAndCache();

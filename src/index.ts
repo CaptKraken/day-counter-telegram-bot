@@ -8,6 +8,7 @@ import {
   fetchAndCache,
   increaseDayCount,
   isAdmin,
+  removeAdmin,
   sendMessageToGroup,
   setAdmin,
   setDayCount,
@@ -72,6 +73,7 @@ const COMMANDS = {
   setCount: "setCount",
   setGroup: "setGroup",
   setAdmin: "setAdmin",
+  removeAdmin: "removeAdmin",
 };
 
 app.post(URI, async (req: Request, res: Response) => {
@@ -81,7 +83,6 @@ app.post(URI, async (req: Request, res: Response) => {
   const chatId: number = message.chat.id;
   const senderId: number = message.from.id;
   const text: string = `${message.text}`.trim();
-  console.log(`TEXT`, text, messageId, chatId, senderId);
 
   if (!text || !messageId || !chatId || !senderId || !isAdmin(senderId)) {
     res.send();
@@ -105,10 +106,18 @@ app.post(URI, async (req: Request, res: Response) => {
     if (text.includes(COMMANDS.setAdmin)) {
       const toBeAdminId = message.reply_to_message.from.id;
       const isIdValid = !isNaN(toBeAdminId);
-      console.log(toBeAdminId);
 
       if (isIdValid) {
         await setAdmin(toBeAdminId);
+      }
+    }
+
+    if (text.includes(COMMANDS.removeAdmin)) {
+      const toBeRemovedId = message.reply_to_message.from.id;
+      const isIdValid = !isNaN(toBeRemovedId);
+
+      if (isIdValid) {
+        await removeAdmin(toBeRemovedId);
       }
     }
   } catch (err) {
