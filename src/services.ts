@@ -101,6 +101,29 @@ export const setDayCount = async (dayCount: number) => {
     await dbClient.close();
   }
 };
+export const setGroup = async (groupId: number) => {
+  try {
+    await dbClient.connect();
+    const collection = await dbClient
+      .db("day-count-db")
+      .collection("data")
+      .findOneAndUpdate(
+        { _id: new ObjectId(DOCUMENT_ID) },
+        {
+          $set: { chat_id: groupId },
+        },
+        {
+          upsert: true,
+        }
+      );
+    // @ts-ignore
+    cache = { ...collection.value, chat_id: groupId };
+  } catch (err) {
+    throw new Error(`function: "setGroup"\nError:\n${err}`);
+  } finally {
+    await dbClient.close();
+  }
+};
 
 export const sendMessage = async (chat_id: number, message: string) => {
   if (!chat_id || !message) return;

@@ -9,6 +9,7 @@ import {
   increaseDayCount,
   sendMessageToGroup,
   setDayCount,
+  setGroup,
 } from "./services";
 import axios from "axios";
 
@@ -85,6 +86,12 @@ app.post(URI, async (req: Request, res: Response) => {
       const count = Number(text.replace("/setCount ", "").trim());
       if (isNaN(count)) res.send();
       await setDayCount(Number(count));
+    }
+    if (text.includes("/setGroup")) {
+      const isGroup = message.chat.type === "group";
+
+      if (!isGroup || !chatId) res.send();
+      await setGroup(chatId);
     }
   } catch (err) {
   } finally {
