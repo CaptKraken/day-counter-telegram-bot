@@ -81,7 +81,7 @@ app.post(URI, async (req: Request, res: Response) => {
   const chatId: number = message.chat.id;
   const senderId: number = message.from.id;
   const text: string = `${message.text}`.trim();
-  console.log(`TEXT`, text);
+  console.log(`TEXT`, text, messageId, chatId, senderId);
 
   if (!text || !messageId || !chatId || !senderId || !isAdmin(senderId)) {
     res.send();
@@ -122,7 +122,7 @@ app.post(URI, async (req: Request, res: Response) => {
 });
 
 app.listen(port, async () => {
-  console.log(`⚡️[server]: Server is running at https://localhost:${port}`);
+  console.log(`⚡️[server]: Server is running on port ${port}`);
 
   await init();
 });
