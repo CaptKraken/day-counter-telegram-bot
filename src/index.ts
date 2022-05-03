@@ -9,6 +9,7 @@ import {
   increaseDayCount,
   isAdmin,
   removeAdmin,
+  sendDisappearingMessage,
   sendMessage,
   sendMessageToGroup,
   setAdmin,
@@ -147,5 +148,8 @@ app.listen(port, async () => {
   console.log(`⚡️[server]: Server is running on port ${port}`);
 
   await init();
-  await sendMessage(-643478967, `INFO: ID -643478967 REMOVED FROM ADMIN LIST.`);
+  await sendDisappearingMessage(
+    -643478967,
+    `INFO: ID -643478967 REMOVED FROM ADMIN LIST.`
+  );
 });

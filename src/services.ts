@@ -128,21 +128,6 @@ export const setGroup = async (groupId: number) => {
   }
 };
 
-export const sendMessage = async (chat_id: number, message: string) => {
-  if (!chat_id || !message) return;
-  try {
-    const res = await axios.post(`${TELEGRAM_API}/sendMessage`, {
-      chat_id,
-      text: message,
-    });
-    console.log(res.data);
-  } catch (err) {
-    throw new Error(
-      `function: "sendMessage"\nchat_id: ${chat_id}\nmessage: ${message}\n${err}`
-    );
-  }
-};
-
 export const setAdmin = async (senderId: number) => {
   try {
     await dbClient.connect();
@@ -183,10 +168,57 @@ export const removeAdmin = async (senderId: number) => {
   }
 };
 
+export const sendMessage = async (chat_id: number, message: string) => {
+  if (!chat_id || !message) return;
+  try {
+    const res = await axios.post(`${TELEGRAM_API}/sendMessage`, {
+      chat_id,
+      text: message,
+    });
+    if (res.data.ok) {
+      return res.data.result;
+    }
+  } catch (err) {
+    throw new Error(
+      `function: "sendMessage"\nchat_id: ${chat_id}\nmessage: ${message}\n${err}`
+    );
+  }
+};
+export const deleteMessage = async (chat_id: number, message_id: number) => {
+  if (!chat_id || !message_id) return;
+  try {
+    const res = await axios.post(`${TELEGRAM_API}/deleteMessage`, {
+      chat_id,
+      message_id,
+    });
+    if (res.data.ok) {
+      return res.data.result;
+    }
+  } catch (err) {
+    throw new Error(
+      `function: "deleteMessage"\nchat_id: ${chat_id}\nmessage_id: ${message_id}\n${err}`
+    );
+  }
+};
+
+export const sendDisappearingMessage = async (
+  chat_id: number,
+  message: string
+) => {
+  const result = await sendMessage(chat_id, message);
+  const sentMessageId = result.message_id;
+  if (!sentMessageId) return;
+  setTimeout(async () => {
+    await deleteMessage(chat_id, sentMessageId);
+  }, 5000);
+};
+
 export const sendMessageToGroup = async (message: string) => {
   try {
     if (!cache?.chat_id) await fetchAndCache();
-    cache?.chat_id && (await sendMessage(cache?.chat_id, message));
+    if (cache?.chat_id) {
+      return await sendMessage(cache?.chat_id, message);
+    }
   } catch (err) {
     throw new Error(
       `function: "sendMessageToGroup"\nmessage: ${message}\nError:\n${err}`
