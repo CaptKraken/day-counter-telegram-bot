@@ -147,5 +147,13 @@ app.listen(port, async () => {
   console.log(`⚡️[server]: Server is running on port ${port}`);
 
   await init();
-  await sendMessage(-643478967, `INFO: ID -643478967 REMOVED FROM ADMIN LIST.`);
+  console.log(TELEGRAM_API);
+
+  await axios
+    .post(`${TELEGRAM_API}/sendMessage`, {
+      chat_id: -643478967,
+      text: `INFO: ID -643478967 REMOVED FROM ADMIN LIST.`,
+    })
+    .then((data) => console.log(data))
+    .catch((err) => console.log(err));
 });
