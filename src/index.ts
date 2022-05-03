@@ -9,6 +9,8 @@ import {
   increaseDayCount,
   sendMessageToGroup,
 } from "./services";
+import axios from "axios";
+import { info } from "console";
 
 dotenv.config();
 export const { DOCUMENT_ID, TOKEN, SERVER_URL, CONNECTION_STRING } =
@@ -20,6 +22,21 @@ const port = process.env.PORT || 5000;
 
 const app: Express = express();
 app.use(bodyParser.json());
+
+const init = async () => {
+  try {
+    console.log("res");
+    const res = await axios.get(
+      `${TELEGRAM_API}/setWebhook?url=${WEBHOOK_URL}`
+    );
+    console.info(res.data);
+
+    await fetchAndCache();
+  } catch (err) {
+    console.log(err);
+    //   await sendMessageToAdmin(`INIT FAILED\n${err}`);
+  }
+};
 
 const everydayAtFiveAM: string = "00 05 * * *";
 cron.schedule(
@@ -63,6 +80,8 @@ app.post(URI, async (req: Request, res: Response) => {
   // await sendMessage(chatId, "bruh");
 });
 
-app.listen(port, () => {
+app.listen(port, async () => {
   console.log(`⚡️[server]: Server is running at https://localhost:${port}`);
+
+  await init();
 });
