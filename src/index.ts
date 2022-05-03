@@ -27,10 +27,6 @@ const app: Express = express();
 app.use(bodyParser.json());
 
 const init = async () => {
-  console.log(
-    `${DOCUMENT_ID}\n${TOKEN}\n${SERVER_URL}\n${CONNECTION_STRING}\n${TELEGRAM_API}\n${URI}\n${WEBHOOK_URL}`
-  );
-
   try {
     const res = await axios.get(
       `${TELEGRAM_API}/setWebhook?url=${WEBHOOK_URL}`
@@ -79,7 +75,6 @@ const COMMANDS = {
 };
 
 app.post(URI, async (req: Request, res: Response) => {
-  console.log(req.body);
   const message = req.body.message;
   if (!message) return res.send();
   const messageId: number = message.message_id;
@@ -108,8 +103,10 @@ app.post(URI, async (req: Request, res: Response) => {
     }
 
     if (text.includes(COMMANDS.setAdmin)) {
-      const toBeAdminId = message.forward_from.id;
+      const toBeAdminId = message.reply_to_message.from.id;
       const isIdValid = !isNaN(toBeAdminId);
+      console.log(toBeAdminId);
+
       if (isIdValid) {
         await setAdmin(toBeAdminId);
       }
