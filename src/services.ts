@@ -76,6 +76,7 @@ export const increaseDayCount = async () => {
 
 export const setDayCount = async (dayCount: number) => {
   try {
+    console.log("from service function");
     await dbClient.connect();
     const collection = await dbClient
       .db("day-count-db")
