@@ -17,14 +17,17 @@ export const { DOCUMENT_ID, TOKEN, SERVER_URL, CONNECTION_STRING } =
 export const TELEGRAM_API = `https://api.telegram.org/bot${TOKEN}`;
 const URI = `/webhook/${TOKEN}`;
 const WEBHOOK_URL = SERVER_URL + URI;
-const port = process.env.PORT || 5000;
+const port = process.env.PORT || 3000;
 
 const app: Express = express();
 app.use(bodyParser.json());
 
 const init = async () => {
+  console.log(
+    `${DOCUMENT_ID}\n${TOKEN}\n${SERVER_URL}\n${CONNECTION_STRING}\n${TELEGRAM_API}\n${URI}\n${WEBHOOK_URL}`
+  );
+
   try {
-    console.log("res");
     const res = await axios.get(
       `${TELEGRAM_API}/setWebhook?url=${WEBHOOK_URL}`
     );
@@ -68,12 +71,12 @@ app.get("/", (req: Request, res: Response) => {
 });
 
 app.post(URI, async (req: Request, res: Response) => {
+  console.log(req.body);
   const message = req.body.message || req.body.edited_message;
   if (!message) return res.send();
   const messageId: number = message.message_id;
   const chatId: number = message.chat.id;
   const senderId: number = message.from.id;
-  console.log(message);
   res.send();
 
   // await sendMessage(chatId, "bruh");
