@@ -17,6 +17,8 @@ export let cache: Cache;
 
 export const fetchAndCache = async () => {
   try {
+    console.log(dbClient);
+
     await dbClient.connect();
     if (DOCUMENT_ID) {
       const document = await findOneDocument(DOCUMENT_ID);
