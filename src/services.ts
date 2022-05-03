@@ -1,6 +1,8 @@
 import axios from "axios";
 import { MongoClient, ObjectId, WithId } from "mongodb";
-import { CONNECTION_STRING, DOCUMENT_ID, TELEGRAM_API } from "./index";
+import dotenv from "dotenv";
+dotenv.config();
+const { CONNECTION_STRING, DOCUMENT_ID, TELEGRAM_API } = process.env;
 
 export const dbClient = new MongoClient(`${CONNECTION_STRING}`);
 
@@ -17,8 +19,6 @@ export let cache: Cache;
 
 export const fetchAndCache = async () => {
   try {
-    console.log(dbClient);
-
     await dbClient.connect();
     if (DOCUMENT_ID) {
       const document = await findOneDocument(DOCUMENT_ID);

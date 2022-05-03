@@ -4,12 +4,12 @@ import dotenv from "dotenv";
 import cron from "node-cron";
 import {
   cache,
+  dbClient,
   fetchAndCache,
   increaseDayCount,
   sendMessageToGroup,
 } from "./services";
 import axios from "axios";
-import { MongoClient } from "mongodb";
 
 dotenv.config();
 export const { DOCUMENT_ID, TOKEN, SERVER_URL, CONNECTION_STRING } =
@@ -21,7 +21,6 @@ const port = process.env.PORT || 5000;
 
 const app: Express = express();
 app.use(bodyParser.json());
-const dbClient = new MongoClient(`${CONNECTION_STRING}`);
 
 const init = async () => {
   try {
